@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Personality Test - Rent a Hobby{% endblock %}
+
+{% block content %}
+<div class="test-page">
+    <div class="test-header">
+        <h1>Hobby Personality-Test</h1>
+        <p>Finde dein passendes Hobby basierend auf deiner Persönlichkeit!</p>
+    </div>
+
+    <form method="POST" class="test-form">
+        {% for question in questions %}
+            <div class="question-card">
+                <div class="question-number">Frage {{ question.id }} von {{ questions|length }}</div>
+                <h3>{{ question.question }}</h3>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ (question.id / questions|length * 100) }}%"></div>
+                </div>
+                
+                <div class="answers">
+                    {% for answer in question.answers %}
+                        <label class="answer-option">
+                            <input 
+                                type="radio" 
+                                name="question_{{ question.id }}" 
+                                value="{{ loop.index0 }}"
+                                required
+                            >
+                            <span class="answer-text">{{ answer.text }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="test-buttons">
+            <button type="submit" class="btn-primary">Testergebnis anzeigen</button>
+            <a href="{{ url_for('index') }}" class="btn-secondary">Abbrechen</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

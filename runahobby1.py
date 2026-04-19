@@ -14,9 +14,7 @@ from flask import (
 )
 
 BASE_DIR = Path(__file__).resolve().parent
-EXCEL_PATH = Path(
-    r"C:\Users\sarah\OneDrive - Universitaet St.Gallen\Desktop\Tech-Entrepreneurship\Hobbys.xlsx"
-)
+EXCEL_PATH = BASE_DIR / "Hobbys.xlsx"
 DB_PATH = BASE_DIR / "rentahobby.db"
 
 LANG_TEXTS = {
@@ -104,25 +102,11 @@ def get_lang():
 
 
 def load_hobbies():
-    if not EXCEL_PATH.exists():
-        return []
-
-    df = pd.read_excel(EXCEL_PATH, engine="openpyxl")
-    df.columns = [str(c).strip() for c in df.columns]
-    hobbies = []
-    for _, row in df.iterrows():
-        hobby_name = str(row.get("Hobby", "")).strip()
-        image = get_hobby_image(hobby_name)
-        hobbies.append(
-            {
-                "Hobby": hobby_name,
-                "Beschreibung Hobby": str(row.get("Beschreibung Hobby", "")).strip(),
-                "Zubehör": str(row.get("Zubehör", "")).strip(),
-                "Preis": int(row.get("Preis", 0)) if pd.notna(row.get("Preis", 0)) else 0,
-                "image": image,
-            }
-        )
-    return [h for h in hobbies if h["Hobby"]]
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM hobbies")
+        rows = c.fetchall()
+        return [{"Hobby": r[0], "Beschreibung Hobby": r[1], "Zubehör": r[2], "Preis": r[3], "image": r[4]} for r in rows]
 
 
 def get_hobby_image(hobby_name):
@@ -150,6 +134,15 @@ def get_hobby_image(hobby_name):
 def init_db():
     with sqlite3.connect(DB_PATH) as conn:
         c = conn.cursor()
+        c.execute("CREATE TABLE IF NOT EXISTS hobbies (Hobby TEXT PRIMARY KEY, Beschreibung TEXT, Zubehör TEXT, Preis INTEGER, image TEXT)")
+        # Lade Daten aus Excel, falls DB leer
+        c.execute("SELECT COUNT(*) FROM hobbies")
+        if c.fetchone()[0] == 0:
+            hobbies = load_hobbies()
+            for hobby in hobbies:
+                c.execute("INSERT INTO hobbies VALUES (?, ?, ?, ?, ?)", 
+                          (hobby["Hobby"], hobby["Beschreibung Hobby"], hobby["Zubehör"], hobby["Preis"], hobby["image"]))
+        # Bestehende Tabellen
         c.execute(
             "CREATE TABLE IF NOT EXISTS wishlist (id INTEGER PRIMARY KEY, hobby TEXT, created_at TEXT)"
         )
@@ -332,4 +325,4 @@ def set_language(lang):
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True, port=5000)
+    app.run()

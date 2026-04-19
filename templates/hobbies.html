@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hobbies-page">
+  <h1>{{ texts.hobbies }}</h1>
+  <div class="hobbies-grid">
+    {% for hobby in hobbies %}
+      <article class="hobby-item">
+        <img src="{{ url_for('static', filename=hobby.image) }}" alt="{{ hobby.Hobby }}" />
+        <h3>{{ hobby.Hobby }}</h3>
+        <p class="category">{{ hobby['Beschreibung Hobby'] }}</p>
+        <p class="price">{{ texts.price }}: {{ hobby.Preis }} CHF</p>
+        <div class="action-buttons">
+          <a class="btn-secondary" href="{{ url_for('hobby_detail', hobby_name=hobby.Hobby) }}">{{ texts.more_info }}</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

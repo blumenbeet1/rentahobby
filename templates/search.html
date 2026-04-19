@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="search-section">
+  <div class="hobbies-page">
+    <h1>{{ texts.search }}</h1>
+    <form class="search-form-large" action="{{ url_for('search') }}" method="get">
+      <input class="search-input-large" type="text" name="q" value="{{ query or '' }}" placeholder="{{ texts.search_placeholder }}" />
+      <button class="btn-primary" type="submit">{{ texts.search }}</button>
+    </form>
+
+    {% if query is not none %}
+      {% if results %}
+        <div class="hobbies-grid">
+          {% for hobby in results %}
+            <article class="hobby-item">
+              <img src="{{ url_for('static', filename=hobby.image) }}" alt="{{ hobby.Hobby }}" />
+              <h3>{{ hobby.Hobby }}</h3>
+              <p class="category">{{ hobby['Beschreibung Hobby'] }}</p>
+              <p class="price">{{ texts.price }}: {{ hobby.Preis }} CHF</p>
+              <div class="action-buttons">
+                <a class="btn-secondary" href="{{ url_for('hobby_detail', hobby_name=hobby.Hobby) }}">{{ texts.more_info }}</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="no-results">
+          <p>{{ texts.no_match }}</p>
+          <form action="{{ url_for('request_hobby') }}" method="post">
+            <input type="hidden" name="hobby_name" value="{{ query }}" />
+            <div class="action-buttons">
+              <button class="btn-primary" name="answer" value="yes" type="submit">{{ texts.yes }}</button>
+              <button class="btn-secondary" name="answer" value="no" type="submit">{{ texts.no }}</button>
+            </div>
+          </form>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

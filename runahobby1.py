@@ -109,26 +109,79 @@ def load_hobbies():
         return [{"Hobby": r[0], "Beschreibung Hobby": r[1], "Zubehör": r[2], "Preis": r[3], "image": r[4]} for r in rows]
 
 
+def normalize_name(value):
+    if not value:
+        return ""
+    normalized = str(value).lower().strip()
+    normalized = normalized.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace("ß", "ss")
+    normalized = normalized.replace("é", "e").replace("è", "e").replace("ê", "e")
+    normalized = normalized.replace(" ", "").replace("-", "").replace("_", "").replace(".", "")
+    return "".join(ch for ch in normalized if ch.isalnum())
+
+
 def get_hobby_image(hobby_name):
-    # Mapping for hobby names to image filenames
+    if not hobby_name:
+        return ""
+
+    static_dir = BASE_DIR / "static"
+    available_files = [
+        path.name
+        for path in static_dir.iterdir()
+        if path.is_file() and path.suffix.lower() in {".avif", ".png", ".jpg", ".jpeg", ".webp"}
+    ]
+
+    normalized_hobby = normalize_name(hobby_name)
+    for filename in available_files:
+        if normalize_name(filename) == normalized_hobby:
+            return filename
+
     image_mapping = {
-        "Fotographie": "Fotografie.avif",
-        "Keramik": "Keramik.avif",
-        "Bowling": "Bowling.avif",
+        "fotographie": "Fotografie.avif",
+        "keramik": "Keramik.avif",
+        "bowling": "Bowling.avif",
         "saxophone": "saxofon.avif",
-        "E-Guitarre": "eguittare.avif",
-        "3D-Druck": "3d-druck.avif",
-        "Bogenschiessen": "Bogenschiessen.avif",
-        "Drohnen fliegen": "drohnen fliegen.avif",
-        "Escape Room": "escape room.avif",
-        "Modelbauauto": "modelbauauto.avif",
-        "Schmuckherstellung": "Schmuckherstellung.avif",
-        "Siebdruck": "siebdruck.avif",
-        "Standup Paddling": "standup paddling.avif",
-        "Teleskop": "teleskop.avif",
-        "Virtual Reality": "virtual reality.avif",
+        "e-guitarre": "eguittare.avif",
+        "e-gitarre": "eguittare.avif",
+        "3d-druck": "3d-druck.avif",
+        "bogenschiessen": "Bogenschiessen.avif",
+        "drohnenfliegen": "drohnen fliegen.avif",
+        "escaperoom": "escape room.avif",
+        "modelbauauto": "modelbauauto.avif",
+        "schmuckherstellung": "Schmuckherstellung.avif",
+        "siebdruck": "siebdruck.avif",
+        "standuppaddling": "standup paddling.avif",
+        "teleskop": "teleskop.avif",
+        "virtualreality": "virtual reality.avif",
     }
-    return image_mapping.get(hobby_name, "placeholder.png")  # fallback if no image found
+
+    mapped = image_mapping.get(normalized_hobby)
+    if mapped and mapped in available_files:
+        return mapped
+
+    return available_files[0] if available_files else ""
+
+
+def load_hobbies_from_excel():
+    if not EXCEL_PATH.exists():
+        return []
+
+    df = pd.read_excel(EXCEL_PATH, engine="openpyxl")
+    df.columns = [str(c).strip() for c in df.columns]
+    hobbies = []
+    for _, row in df.iterrows():
+        hobby_name = str(row.get("Hobby", "")).strip()
+        if not hobby_name:
+            continue
+        hobbies.append(
+            {
+                "Hobby": hobby_name,
+                "Beschreibung Hobby": str(row.get("Beschreibung Hobby", "")).strip(),
+                "Zubehör": str(row.get("Zubehör", "")).strip(),
+                "Preis": int(row.get("Preis", 0)) if pd.notna(row.get("Preis", 0)) else 0,
+                "image": get_hobby_image(hobby_name),
+            }
+        )
+    return hobbies
 
 
 def init_db():
@@ -138,10 +191,18 @@ def init_db():
         # Lade Daten aus Excel, falls DB leer
         c.execute("SELECT COUNT(*) FROM hobbies")
         if c.fetchone()[0] == 0:
-            hobbies = load_hobbies()
+            hobbies = load_hobbies_from_excel()
             for hobby in hobbies:
-                c.execute("INSERT INTO hobbies VALUES (?, ?, ?, ?, ?)", 
-                          (hobby["Hobby"], hobby["Beschreibung Hobby"], hobby["Zubehör"], hobby["Preis"], hobby["image"]))
+                c.execute(
+                    "INSERT INTO hobbies VALUES (?, ?, ?, ?, ?)",
+                    (
+                        hobby["Hobby"],
+                        hobby["Beschreibung Hobby"],
+                        hobby["Zubehör"],
+                        hobby["Preis"],
+                        hobby["image"],
+                    ),
+                )
         # Bestehende Tabellen
         c.execute(
             "CREATE TABLE IF NOT EXISTS wishlist (id INTEGER PRIMARY KEY, hobby TEXT, created_at TEXT)"
@@ -326,5 +387,4 @@ def set_language(lang):
 
 
 if __name__ == "__main__":
-    init_db()
     app.run()

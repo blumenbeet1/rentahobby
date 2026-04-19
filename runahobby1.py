@@ -154,6 +154,8 @@ def init_db():
         )
         conn.commit()
 
+init_db()
+
 
 def find_hobby(name):
     if not name:

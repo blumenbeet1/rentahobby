@@ -376,14 +376,18 @@ def contact():
     return render_template("contact.html", texts=texts, lang=lang)
 
 
-@app.route("/set_language/<lang>")
-def set_language(lang):
-    if lang not in LANG_TEXTS:
-        lang = "de"
-    next_page = request.referrer or url_for("home")
-    response = make_response(redirect(next_page))
-    response.set_cookie("lang", lang, max_age=60 * 60 * 24 * 365)
-    return response
+@app.route("/admin")
+def admin():
+    lang, texts = page_context("contact")  # reuse contact context
+    with sqlite3.connect(DB_PATH) as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM interests ORDER BY created_at DESC")
+        interests = c.fetchall()
+        c.execute("SELECT * FROM hobby_views ORDER BY view_count DESC")
+        views = c.fetchall()
+        c.execute("SELECT * FROM wishlist ORDER BY created_at DESC")
+        wishlist = c.fetchall()
+    return render_template("admin.html", texts=texts, interests=interests, views=views, wishlist=wishlist, lang=lang)
 
 
 if __name__ == "__main__":

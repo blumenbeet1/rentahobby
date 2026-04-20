@@ -149,6 +149,7 @@ def get_hobby_image(hobby_name):
 
     image_mapping = {
         "fotografie": "Fotografie.avif",
+        "fotographie": "Fotografie.avif",
         "keramik": "Keramik.avif",
         "bowling": "Bowling.avif",
         "saxophone": "saxofon.avif",

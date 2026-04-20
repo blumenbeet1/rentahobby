@@ -124,11 +124,14 @@ def get_hobby_image(hobby_name):
         return ""
 
     static_dir = BASE_DIR / "static"
-    available_files = [
-        path.name
-        for path in static_dir.iterdir()
-        if path.is_file() and path.suffix.lower() in {".avif", ".png", ".jpg", ".jpeg", ".webp"}
-    ]
+    try:
+        available_files = [
+            path.name
+            for path in static_dir.iterdir()
+            if path.is_file() and path.suffix.lower() in {".avif", ".png", ".jpg", ".jpeg", ".webp"}
+        ]
+    except (FileNotFoundError, OSError):
+        available_files = []
 
     normalized_hobby = normalize_name(hobby_name)
     for filename in available_files:
@@ -158,7 +161,8 @@ def get_hobby_image(hobby_name):
     if mapped and mapped in available_files:
         return mapped
 
-    return available_files[0] if available_files else ""
+    # Return a default if no image found
+    return "placeholder.png" if "placeholder.png" in available_files else (available_files[0] if available_files else "")
 
 
 def load_hobbies_from_excel():

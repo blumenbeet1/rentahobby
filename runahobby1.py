@@ -37,6 +37,10 @@ app.secret_key = "change-this-secret"
 db = SQLAlchemy(app)
 
 
+# Initialize database and load data
+init_db()
+
+
 # Database Models
 class Hobby(db.Model):
     __tablename__ = "hobbies"
@@ -438,5 +442,4 @@ def admin():
 
 
 if __name__ == "__main__":
-    init_db()
     app.run()

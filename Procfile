@@ -1,0 +1,1 @@
+web: gunicorn runahobby1:app

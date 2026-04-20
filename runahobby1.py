@@ -37,10 +37,6 @@ app.secret_key = "change-this-secret"
 db = SQLAlchemy(app)
 
 
-# Initialize database and load data
-init_db()
-
-
 # Database Models
 class Hobby(db.Model):
     __tablename__ = "hobbies"
@@ -271,6 +267,10 @@ def init_db():
             if correct_image and hobby.image != correct_image:
                 hobby.image = correct_image
                 db.session.commit()
+
+
+# Initialize database and load data
+init_db()
 
 
 def load_hobbies():

@@ -380,6 +380,16 @@ def contact():
     return render_template("contact.html", texts=texts, lang=lang)
 
 
+@app.route("/set_language/<lang>")
+def set_language(lang):
+    if lang not in LANG_TEXTS:
+        lang = "de"
+    next_page = request.referrer or url_for("home")
+    response = make_response(redirect(next_page))
+    response.set_cookie("lang", lang, max_age=60 * 60 * 24 * 365)
+    return response
+
+
 @app.route("/admin")
 def admin():
     lang, texts = page_context("contact")  # reuse contact context

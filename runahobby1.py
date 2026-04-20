@@ -106,7 +106,16 @@ def load_hobbies():
         c = conn.cursor()
         c.execute("SELECT * FROM hobbies")
         rows = c.fetchall()
-        return [{"Hobby": r[0], "Beschreibung Hobby": r[1], "Zubehör": r[2], "Preis": r[3], "image": r[4]} for r in rows]
+        hobbies = []
+        for r in rows:
+            hobby = {"Hobby": r[0], "Beschreibung Hobby": r[1], "Zubehör": r[2], "Preis": r[3], "image": r[4]}
+            correct_image = get_hobby_image(hobby["Hobby"])
+            if correct_image and hobby["image"] != correct_image:
+                c.execute("UPDATE hobbies SET image = ? WHERE Hobby = ?", (correct_image, hobby["Hobby"]))
+                hobby["image"] = correct_image
+            hobbies.append(hobby)
+        conn.commit()
+        return hobbies
 
 
 def normalize_name(value):
@@ -135,25 +144,29 @@ def get_hobby_image(hobby_name):
 
     normalized_hobby = normalize_name(hobby_name)
     for filename in available_files:
-        if normalize_name(filename) == normalized_hobby:
+        if normalize_name(Path(filename).stem) == normalized_hobby:
             return filename
 
     image_mapping = {
         "fotografie": "Fotografie.avif",
         "keramik": "Keramik.avif",
         "bowling": "Bowling.avif",
-        "bogenschiessen": "Bogenschiessen.avif",
-        "modelbauauto": "modelbauauto.avif",
-        "schmuckherstellung": "Schmuckherstellung.avif",
-        "siebdruck": "siebdruck.avif",
-        "teleskop": "teleskop.avif",
-        "3ddruck": "3d-druck.avif",
-        "drohnenfliegen": "drohnen fliegen.avif",
-        "escaperoom": "escape room.avif",
-        "standuppaddling": "standup paddling.avif",
-        "virtualreality": "virtual reality.avif",
-        "egitarre": "eguittare.avif",
+        "saxophone": "saxofon.avif",
         "saxophon": "saxofon.avif",
+        "egitarre": "eguittare.avif",
+        "eguitarre": "eguittare.avif",
+        "e-gitarre": "eguittare.avif",
+        "3ddruck": "3d-druck.avif",
+        "teleskopastronomie": "teleskop.avif",
+        "teleskop": "teleskop.avif",
+        "siebdruckdiytextildruck": "siebdruck.avif",
+        "modelbauauto": "modelbauauto.avif",
+        "drohnenfliegen": "drohnen fliegen.avif",
+        "virtualreality": "virtual reality.avif",
+        "bogenschiessen": "Bogenschiessen.avif",
+        "schmuckherstellung": "Schmuckherstellung.avif",
+        "standuppaddlingsup": "standup paddling.avif",
+        "escaperoomspielefuerzuhause": "escape room.avif",
     }
 
     mapped = image_mapping.get(normalized_hobby)

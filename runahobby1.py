@@ -139,22 +139,21 @@ def get_hobby_image(hobby_name):
             return filename
 
     image_mapping = {
-        "fotographie": "Fotografie.avif",
+        "fotografie": "Fotografie.avif",
         "keramik": "Keramik.avif",
         "bowling": "Bowling.avif",
-        "saxophone": "saxofon.avif",
-        "e-guitarre": "eguittare.avif",
-        "e-gitarre": "eguittare.avif",
-        "3d-druck": "3d-druck.avif",
         "bogenschiessen": "Bogenschiessen.avif",
-        "drohnenfliegen": "drohnen fliegen.avif",
-        "escaperoom": "escape room.avif",
         "modelbauauto": "modelbauauto.avif",
         "schmuckherstellung": "Schmuckherstellung.avif",
         "siebdruck": "siebdruck.avif",
-        "standuppaddling": "standup paddling.avif",
         "teleskop": "teleskop.avif",
+        "3ddruck": "3d-druck.avif",
+        "drohnenfliegen": "drohnen fliegen.avif",
+        "escaperoom": "escape room.avif",
+        "standuppaddling": "standup paddling.avif",
         "virtualreality": "virtual reality.avif",
+        "egitarre": "eguittare.avif",
+        "saxophon": "saxofon.avif",
     }
 
     mapped = image_mapping.get(normalized_hobby)

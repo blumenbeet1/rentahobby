@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="hero">
+  <div class="hero-content">
+    <h1>{{ texts.hero_title }}</h1>
+    <p>{{ texts.hero_subtitle }}</p>
+    <div class="search-box">
+      <form class="search-form" action="{{ url_for('search') }}" method="get">
+        <input class="search-input" type="text" name="q" placeholder="{{ texts.search_placeholder }}" />
+        <button class="search-btn" type="submit">🔎</button>
+      </form>
+    </div>
+    <a class="btn-primary" href="{{ url_for('hobbies') }}">{{ texts.find_hobby }}</a>
+  </div>
+  <div class="hero-hobbies">
+    {% for hobby in featured %}
+      <a class="hobby-card" href="{{ url_for('hobby_detail', hobby_name=hobby.Hobby) }}">
+        {% if hobby.image %}
+        <img src="{{ url_for('static', filename=hobby.image) }}" alt="{{ hobby.Hobby }}" />
+        {% endif %}
+        <div class="hobby-label">{{ hobby.Hobby }}</div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<section class="popular-hobbies">
+  <h2>{{ texts.popular_hobbies }}</h2>
+  <div class="hobbies-grid">
+    {% for hobby in featured %}
+      <article class="hobby-item">
+        {% if hobby.image %}
+        <img src="{{ url_for('static', filename=hobby.image) }}" alt="{{ hobby.Hobby }}" />
+        {% endif %}
+        <h3>{{ hobby.Hobby }}</h3>
+        <p class="category">{{ hobby['Beschreibung Hobby'] }}</p>
+        <p class="price">{{ texts.price }}: {{ hobby.Preis }} CHF</p>
+        <div class="action-buttons">
+          <a class="btn-secondary" href="{{ url_for('hobby_detail', hobby_name=hobby.Hobby) }}">{{ texts.more_info }}</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

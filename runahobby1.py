@@ -1,3 +1,4 @@
+import os
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -12,11 +13,73 @@ from flask import (
     request,
     url_for,
 )
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 BASE_DIR = Path(__file__).resolve().parent
 EXCEL_PATH = BASE_DIR / "Hobbys.xlsx"
-DB_PATH = BASE_DIR / "rentahobby.db"
 
+# Database Configuration - Local SQLite or Remote PostgreSQL
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    f"sqlite:///{BASE_DIR}/rentahobby.db"
+)
+
+# Fix PostgreSQL URL if needed
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.secret_key = "change-this-secret"
+
+db = SQLAlchemy(app)
+
+
+# Database Models
+class Hobby(db.Model):
+    __tablename__ = "hobbies"
+    id = db.Column(db.Integer, primary_key=True)
+    hobby = db.Column(db.String(255), unique=True, nullable=False)
+    beschreibung = db.Column(db.Text)
+    zubehor = db.Column(db.Text)
+    preis = db.Column(db.Integer)
+    image = db.Column(db.String(255))
+
+    def to_dict(self):
+        return {
+            "Hobby": self.hobby,
+            "Beschreibung Hobby": self.beschreibung or "",
+            "Zubehör": self.zubehor or "",
+            "Preis": self.preis or 0,
+            "image": self.image or "",
+        }
+
+
+class Interest(db.Model):
+    __tablename__ = "interests"
+    id = db.Column(db.Integer, primary_key=True)
+    hobby = db.Column(db.String(255))
+    email = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class HobbyView(db.Model):
+    __tablename__ = "hobby_views"
+    id = db.Column(db.Integer, primary_key=True)
+    hobby = db.Column(db.String(255), unique=True)
+    view_count = db.Column(db.Integer, default=0)
+
+
+class Wishlist(db.Model):
+    __tablename__ = "wishlist"
+    id = db.Column(db.Integer, primary_key=True)
+    hobby = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# Language texts
 LANG_TEXTS = {
     "de": {
         "title": "Rent a Hobby",
@@ -92,30 +155,10 @@ LANG_TEXTS = {
     },
 }
 
-app = Flask(__name__)
-app.secret_key = "change-this-secret"
-
 
 def get_lang():
     lang = request.cookies.get("lang", "de")
     return lang if lang in LANG_TEXTS else "de"
-
-
-def load_hobbies():
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("SELECT * FROM hobbies")
-        rows = c.fetchall()
-        hobbies = []
-        for r in rows:
-            hobby = {"Hobby": r[0], "Beschreibung Hobby": r[1], "Zubehör": r[2], "Preis": r[3], "image": r[4]}
-            correct_image = get_hobby_image(hobby["Hobby"])
-            if correct_image and hobby["image"] != correct_image:
-                c.execute("UPDATE hobbies SET image = ? WHERE Hobby = ?", (correct_image, hobby["Hobby"]))
-                hobby["image"] = correct_image
-            hobbies.append(hobby)
-        conn.commit()
-        return hobbies
 
 
 def normalize_name(value):
@@ -174,7 +217,6 @@ def get_hobby_image(hobby_name):
     if mapped and mapped in available_files:
         return mapped
 
-    # Return a default if no image found
     return "placeholder.png" if "placeholder.png" in available_files else (available_files[0] if available_files else "")
 
 
@@ -202,103 +244,81 @@ def load_hobbies_from_excel():
 
 
 def init_db():
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("CREATE TABLE IF NOT EXISTS hobbies (Hobby TEXT PRIMARY KEY, Beschreibung TEXT, Zubehör TEXT, Preis INTEGER, image TEXT)")
-        # Lade Daten aus Excel, falls DB leer
-        c.execute("SELECT COUNT(*) FROM hobbies")
-        if c.fetchone()[0] == 0:
+    with app.app_context():
+        db.create_all()
+        
+        # Load from Excel if DB is empty
+        if Hobby.query.count() == 0:
             hobbies = load_hobbies_from_excel()
             for hobby in hobbies:
-                c.execute(
-                    "INSERT INTO hobbies VALUES (?, ?, ?, ?, ?)",
-                    (
-                        hobby["Hobby"],
-                        hobby["Beschreibung Hobby"],
-                        hobby["Zubehör"],
-                        hobby["Preis"],
-                        hobby["image"],
-                    ),
+                h = Hobby(
+                    hobby=hobby["Hobby"],
+                    beschreibung=hobby["Beschreibung Hobby"],
+                    zubehor=hobby["Zubehör"],
+                    preis=hobby["Preis"],
+                    image=hobby["image"],
                 )
-        # Bestehende Tabellen
-        c.execute(
-            "CREATE TABLE IF NOT EXISTS wishlist (id INTEGER PRIMARY KEY, hobby TEXT, created_at TEXT)"
-        )
-        c.execute(
-            "CREATE TABLE IF NOT EXISTS interests (id INTEGER PRIMARY KEY, hobby TEXT, email TEXT, created_at TEXT)"
-        )
-        c.execute(
-            "CREATE TABLE IF NOT EXISTS hobby_views (hobby TEXT PRIMARY KEY, view_count INTEGER DEFAULT 0)"
-        )
-        conn.commit()
+                db.session.add(h)
+            db.session.commit()
+        
+        # Fix wrong images
+        for hobby in Hobby.query.all():
+            correct_image = get_hobby_image(hobby.hobby)
+            if correct_image and hobby.image != correct_image:
+                hobby.image = correct_image
+                db.session.commit()
 
-init_db()
+
+def load_hobbies():
+    hobbies = Hobby.query.all()
+    return [h.to_dict() for h in hobbies]
 
 
 def find_hobby(name):
     if not name:
         return None
-    normalized = name.strip().lower()
-    for hobby in load_hobbies():
-        if hobby["Hobby"].strip().lower() == normalized:
-            return hobby
-    return None
+    hobby = Hobby.query.filter(func.lower(Hobby.hobby) == name.strip().lower()).first()
+    return hobby.to_dict() if hobby else None
 
 
 def search_hobbies(query):
     if not query:
         return []
     needle = query.strip().lower()
+    hobbies = Hobby.query.all()
     results = []
-    for hobby in load_hobbies():
-        text = " ".join(
-            [hobby["Hobby"], hobby["Beschreibung Hobby"], hobby["Zubehör"]]
-        ).lower()
+    for hobby in hobbies:
+        text = f"{hobby.hobby} {hobby.beschreibung} {hobby.zubehor}".lower()
         if needle in text:
-            results.append(hobby)
+            results.append(hobby.to_dict())
     return results
 
 
 def store_request(hobby_name):
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute(
-            "INSERT INTO wishlist (hobby, created_at) VALUES (?, ?)",
-            (hobby_name.strip(), datetime.utcnow().isoformat()),
-        )
-        conn.commit()
+    w = Wishlist(hobby=hobby_name.strip())
+    db.session.add(w)
+    db.session.commit()
 
 
 def store_interest(hobby_name, email):
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute(
-            "INSERT INTO interests (hobby, email, created_at) VALUES (?, ?, ?)",
-            (hobby_name.strip(), email.strip(), datetime.utcnow().isoformat()),
-        )
-        conn.commit()
+    i = Interest(hobby=hobby_name.strip(), email=email.strip())
+    db.session.add(i)
+    db.session.commit()
 
 
 def increment_hobby_view(hobby_name):
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute(
-            "INSERT OR IGNORE INTO hobby_views (hobby, view_count) VALUES (?, 0)",
-            (hobby_name.strip(),),
-        )
-        c.execute(
-            "UPDATE hobby_views SET view_count = view_count + 1 WHERE hobby = ?",
-            (hobby_name.strip(),),
-        )
-        conn.commit()
+    view = HobbyView.query.filter_by(hobby=hobby_name.strip()).first()
+    if view:
+        view.view_count += 1
+    else:
+        view = HobbyView(hobby=hobby_name.strip(), view_count=1)
+        db.session.add(view)
+    db.session.commit()
 
 
 def get_hobby_views(hobby_name):
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("SELECT view_count FROM hobby_views WHERE hobby = ?", (hobby_name.strip(),))
-        result = c.fetchone()
-        return result[0] if result else 0
+    view = HobbyView.query.filter_by(hobby=hobby_name.strip()).first()
+    return view.view_count if view else 0
 
 
 def page_context(title_key="title"):
@@ -405,17 +425,18 @@ def set_language(lang):
 
 @app.route("/admin")
 def admin():
-    lang, texts = page_context("contact")  # reuse contact context
-    with sqlite3.connect(DB_PATH) as conn:
-        c = conn.cursor()
-        c.execute("SELECT * FROM interests ORDER BY created_at DESC")
-        interests = c.fetchall()
-        c.execute("SELECT * FROM hobby_views ORDER BY view_count DESC")
-        views = c.fetchall()
-        c.execute("SELECT * FROM wishlist ORDER BY created_at DESC")
-        wishlist = c.fetchall()
-    return render_template("admin.html", texts=texts, interests=interests, views=views, wishlist=wishlist, lang=lang)
+    lang, texts = page_context("contact")
+    interests = Interest.query.order_by(Interest.created_at.desc()).all()
+    views = HobbyView.query.order_by(HobbyView.view_count.desc()).all()
+    wishlist = Wishlist.query.order_by(Wishlist.created_at.desc()).all()
+    
+    interests_data = [(i.id, i.hobby, i.email, i.created_at) for i in interests]
+    views_data = [(v.hobby, v.view_count) for v in views]
+    wishlist_data = [(w.id, w.hobby, w.created_at) for w in wishlist]
+    
+    return render_template("admin.html", texts=texts, interests=interests_data, views=views_data, wishlist=wishlist_data, lang=lang)
 
 
 if __name__ == "__main__":
+    init_db()
     app.run()

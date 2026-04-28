@@ -243,30 +243,61 @@ def load_hobbies_from_excel():
     return hobbies
 
 
-def init_db():
-    with app.app_context():
-        db.create_all()
-        
-        # Load from Excel if DB is empty
-        if Hobby.query.count() == 0:
-            hobbies = load_hobbies_from_excel()
-            for hobby in hobbies:
-                h = Hobby(
-                    hobby=hobby["Hobby"],
+def sync_hobbies_with_excel():
+    if not EXCEL_PATH.exists():
+        return
+
+    hobbies = load_hobbies_from_excel()
+    existing = {hobby.hobby.strip().lower(): hobby for hobby in Hobby.query.all()}
+    excel_hobby_names = set()
+
+    for hobby in hobbies:
+        hobby_name = hobby["Hobby"].strip()
+        if not hobby_name:
+            continue
+
+        key = hobby_name.lower()
+        excel_hobby_names.add(key)
+        db_hobby = existing.get(key)
+
+        if db_hobby:
+            db_hobby.beschreibung = hobby["Beschreibung Hobby"]
+            db_hobby.zubehor = hobby["Zubehör"]
+            db_hobby.preis = hobby["Preis"]
+            db_hobby.image = hobby["image"]
+        else:
+            db.session.add(
+                Hobby(
+                    hobby=hobby_name,
                     beschreibung=hobby["Beschreibung Hobby"],
                     zubehor=hobby["Zubehör"],
                     preis=hobby["Preis"],
                     image=hobby["image"],
                 )
-                db.session.add(h)
-            db.session.commit()
-        
+            )
+
+    for key, db_hobby in existing.items():
+        if key not in excel_hobby_names:
+            db.session.delete(db_hobby)
+
+    db.session.commit()
+
+
+def init_db():
+    with app.app_context():
+        db.create_all()
+        sync_hobbies_with_excel()
+
         # Fix wrong images
+        updated = False
         for hobby in Hobby.query.all():
             correct_image = get_hobby_image(hobby.hobby)
             if correct_image and hobby.image != correct_image:
                 hobby.image = correct_image
-                db.session.commit()
+                updated = True
+
+        if updated:
+            db.session.commit()
 
 
 # Initialize database and load data

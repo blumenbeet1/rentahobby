@@ -116,6 +116,84 @@ LANG_TEXTS = {
         "faq_question_3": "Wie kann ich ein neues Hobby vorschlagen?",
         "faq_answer_3": "Nutzen Sie die Suche und geben Sie das Hobby ein. Falls es noch nicht vorhanden ist, können Sie uns mitteilen, dass Sie es gerne hätten.",
         "title_home": "Startseite",
+        "personality_test_title": "Persönlichkeitstest",
+        "test_description": "Finde dein passendes Hobby basierend auf deiner Persönlichkeit!",
+        "test_submit": "Testergebnis anzeigen",
+        "test_cancel": "Abbrechen",
+        "result_title": "Deine Hobby-Empfehlungen",
+        "result_description": "Basierend auf deinen Antworten haben wir die perfekten Hobbys für dich gefunden!",
+        "traits_title": "Deine Persönlichkeitsmerkmale:",
+        "recommended_hobbies": "Empfohlene Hobbys für dich:",
+        "no_results": "Es wurden keine Hobbys gefunden, die zu deinen Interessen passen.",
+        "back_to_hobbies": "Schau doch in unseren Hobbys um und finde etwas das dir gefällt!",
+    },
+    "en": {
+        "title": "Rent a Hobby",
+        "home": "Home",
+        "search": "Search",
+        "hobbies": "Hobbies",
+        "faqs": "FAQs",
+        "contact": "Contact",
+        "hero_title": "RENT A HOBBY",
+        "hero_subtitle": "Try something new — no commitment!",
+        "search_placeholder": "Search for a hobby...",
+        "find_hobby": "Find a Hobby",
+        "popular_hobbies": "Popular Hobbies",
+        "price": "Price",
+        "more_info": "Learn more",
+        "no_match": "Would you like us to offer this hobby in the future?",
+        "yes": "Yes",
+        "no": "No",
+        "accessories": "Accessories",
+        "detail_text": "We are still validating our startup. Enter your email and we will contact you as soon as we are ready.",
+        "buy_button": "Buy",
+        "email_label": "Your email address",
+        "note_title": "Note",
+        "note_text": "Dear customer, our startup is not ready to sell or rent yet. We are still validating the idea and will contact you once we are ready.",
+        "back": "Back to Hobbies",
+        "contact_title": "Contact",
+        "contact_support": "Please contact us by email or phone.",
+        "contact_text": "We will get back to you as soon as possible.",
+        "phone_label": "Phone",
+        "faq_question_1": "How does Rent a Hobby work?",
+        "faq_answer_1": "We list hobbies with descriptions and prices, and collect interested users to improve our service.",
+        "faq_question_2": "Can I reserve immediately?",
+        "faq_answer_2": "Not yet. Our platform is in the validation phase. Please leave your email and we will notify you when rentals are available.",
+        "faq_question_3": "How can I suggest a new hobby?",
+        "faq_answer_3": "Use the search field and type the hobby. If it is not available, you can tell us and we will consider adding it.",
+        "title_home": "Home",
+        "personality_test_title": "Personality Test",
+        "test_description": "Find your matching hobby based on your personality!",
+        "test_submit": "Show test result",
+        "test_cancel": "Cancel",
+        "result_title": "Your Hobby Recommendations",
+        "result_description": "Based on your answers, we have found the perfect hobbies for you!",
+        "traits_title": "Your personality traits:",
+        "recommended_hobbies": "Recommended hobbies for you:",
+        "no_results": "No hobbies were found that match your interests.",
+        "back_to_hobbies": "Check out our hobbies and find something you like!",
+    },
+}
+
+
+# Personality test questions
+PERSONALITY_QUESTIONS = [
+        "buy_button": "Kaufen",
+        "email_label": "Ihre E-Mail-Adresse",
+        "note_title": "Hinweis",
+        "note_text": "Lieber Kunde, unser Startup ist noch in der Validierungsphase. Wir sind noch nicht bereit, Vermietungen anzubieten, aber wir melden uns bei Ihnen, sobald wir starten.",
+        "back": "Zurück zu Hobbys",
+        "contact_title": "Kontakt",
+        "contact_support": "Kontaktieren Sie uns gerne per E-Mail oder Telefon.",
+        "contact_text": "Wir freuen uns auf Ihre Nachricht und melden uns schnellstmöglich zurück.",
+        "phone_label": "Telefon",
+        "faq_question_1": "Wie funktioniert Rent a Hobby?",
+        "faq_answer_1": "Wir listen Hobbys, geben Beschreibungen und Preise an und nehmen Interessenten auf, damit wir unser Angebot verbessern können.",
+        "faq_question_2": "Kann ich sofort reservieren?",
+        "faq_answer_2": "Noch nicht. Unsere Plattform ist in der Validierungsphase. Tragen Sie Ihre E-Mail ein, und wir informieren Sie, sobald Vermietungen möglich sind.",
+        "faq_question_3": "Wie kann ich ein neues Hobby vorschlagen?",
+        "faq_answer_3": "Nutzen Sie die Suche und geben Sie das Hobby ein. Falls es noch nicht vorhanden ist, können Sie uns mitteilen, dass Sie es gerne hätten.",
+        "title_home": "Startseite",
     },
     "en": {
         "title": "Rent a Hobby",
@@ -154,6 +232,111 @@ LANG_TEXTS = {
         "title_home": "Home",
     },
 }
+
+
+# Personality test questions
+PERSONALITY_QUESTIONS = [
+    {
+        "id": 1,
+        "question": "Wie verbringst du deine Freizeit am liebsten?",
+        "answers": [
+            {"text": "Mit kreativen Aktivitäten wie Malen oder Musik machen", "category": "kreativ"},
+            {"text": "Mit Sport und Bewegung an der frischen Luft", "category": "sportlich"},
+            {"text": "Mit Lesen oder Lernen neuer Dinge", "category": "intellektuell"},
+            {"text": "Mit Freunden treffen und unterhalten", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 2,
+        "question": "Was motiviert dich mehr?",
+        "answers": [
+            {"text": "Schöne Dinge mit meinen Händen zu erschaffen", "category": "kreativ"},
+            {"text": "Meinen Körper fit zu halten", "category": "sportlich"},
+            {"text": "Neues Wissen zu erwerben", "category": "intellektuell"},
+            {"text": "Zeit mit anderen zu verbringen", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 3,
+        "question": "In welcher Umgebung fühlst du dich wohler?",
+        "answers": [
+            {"text": "In einem Atelier oder zu Hause mit Materialien", "category": "kreativ"},
+            {"text": "Draußen in der Natur", "category": "sportlich"},
+            {"text": "In einer Bibliothek oder am Schreibtisch", "category": "intellektuell"},
+            {"text": "In einem Café oder bei einer Party", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 4,
+        "question": "Wie gehst du mit neuen Herausforderungen um?",
+        "answers": [
+            {"text": "Ich experimentiere gerne mit neuen Techniken", "category": "kreativ"},
+            {"text": "Ich nehme sie als sportliche Herausforderung an", "category": "sportlich"},
+            {"text": "Ich recherchiere und lerne systematisch", "category": "intellektuell"},
+            {"text": "Ich suche nach Partnern, um gemeinsam zu lernen", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 5,
+        "question": "Was ist dir bei einem Hobby wichtiger?",
+        "answers": [
+            {"text": "Das Endergebnis und die Kreativität", "category": "kreativ"},
+            {"text": "Die körperliche Betätigung", "category": "sportlich"},
+            {"text": "Das Lernen und Verstehen", "category": "intellektuell"},
+            {"text": "Der Spaß mit anderen", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 6,
+        "question": "Wie viel Zeit möchtest du in ein Hobby investieren?",
+        "answers": [
+            {"text": "Regelmäßig, um Fähigkeiten zu entwickeln", "category": "kreativ"},
+            {"text": "Täglich, um fit zu bleiben", "category": "sportlich"},
+            {"text": "Gelegentlich, aber intensiv", "category": "intellektuell"},
+            {"text": "So oft wie möglich mit Freunden", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 7,
+        "question": "Bevorzugst du Aktivitäten allein oder mit anderen?",
+        "answers": [
+            {"text": "Eher allein, um mich zu konzentrieren", "category": "kreativ"},
+            {"text": "Mit einem Partner oder Team", "category": "sportlich"},
+            {"text": "Allein, um in Ruhe zu lernen", "category": "intellektuell"},
+            {"text": "Mit vielen Leuten", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 8,
+        "question": "Was für Materialien oder Werkzeuge interessieren dich?",
+        "answers": [
+            {"text": "Farben, Pinsel, Ton oder Instrumente", "category": "kreativ"},
+            {"text": "Sportausrüstung wie Bälle oder Fahrräder", "category": "sportlich"},
+            {"text": "Bücher, Computer oder Teleskope", "category": "intellektuell"},
+            {"text": "Spiele oder Partyzubehör", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 9,
+        "question": "Wie wichtig ist dir die körperliche Aktivität?",
+        "answers": [
+            {"text": "Nicht so wichtig, Hauptsache kreativ", "category": "kreativ"},
+            {"text": "Sehr wichtig, ich liebe Bewegung", "category": "sportlich"},
+            {"text": "Mäßig, mehr geistige Aktivität", "category": "intellektuell"},
+            {"text": "Kommt darauf an, aber gerne aktiv", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 10,
+        "question": "Was erwartest du von einem Hobby?",
+        "answers": [
+            {"text": "Etwas Schönes zu erschaffen", "category": "kreativ"},
+            {"text": "Fitness und Gesundheit", "category": "sportlich"},
+            {"text": "Wissen und Bildung", "category": "intellektuell"},
+            {"text": "Soziale Interaktion", "category": "sozial"}
+        ]
+    }
+]
 
 
 def get_lang():
@@ -470,6 +653,44 @@ def admin():
     wishlist_data = [(w.id, w.hobby, w.created_at) for w in wishlist]
     
     return render_template("admin.html", texts=texts, interests=interests_data, views=views_data, wishlist=wishlist_data, lang=lang)
+
+
+@app.route("/personality_test")
+def personality_test():
+    lang, texts = page_context("personality_test_title")
+    return render_template("personality_test.html", texts=texts, questions=PERSONALITY_QUESTIONS, lang=lang)
+
+
+@app.route("/personality_test", methods=["POST"])
+def personality_test_result():
+    lang, texts = page_context("result_title")
+    categories = {}
+    for question in PERSONALITY_QUESTIONS:
+        answer_index = request.form.get(f"question_{question['id']}")
+        if answer_index is not None:
+            try:
+                category = question["answers"][int(answer_index)]["category"]
+                categories[category] = categories.get(category, 0) + 1
+            except (IndexError, ValueError):
+                pass
+    
+    if not categories:
+        return redirect(url_for("personality_test"))
+    
+    top_category = max(categories, key=categories.get)
+    
+    # Map categories to hobbies
+    hobby_mapping = {
+        "kreativ": ["Fotografie", "Keramik", "Schmuckherstellung", "3D-Druck"],
+        "sportlich": ["Bowling", "Bogenschiessen", "Standuppaddlingsup"],
+        "intellektuell": ["Teleskopastronomie", "Virtual Reality"],
+        "sozial": ["Escape Room Spiele für zu Hause"]
+    }
+    
+    recommended_hobby_names = hobby_mapping.get(top_category, [])
+    hobbies = [find_hobby(name) for name in recommended_hobby_names if find_hobby(name)]
+    
+    return render_template("test_result.html", texts=texts, hobbies=hobbies, traits=[top_category], lang=lang)
 
 
 if __name__ == "__main__":

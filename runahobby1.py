@@ -618,10 +618,13 @@ def personality_test_result():
             except (IndexError, ValueError):
                 pass
     
-    if not categories:
-        return redirect(url_for("personality_test"))
-    
-    top_category = max(categories, key=categories.get)
+    category_order = ["kreativ", "sportlich", "intellektuell", "sozial"]
+    if categories:
+        max_score = max(categories.values())
+        tied_categories = [cat for cat, score in categories.items() if score == max_score]
+        top_category = next((cat for cat in category_order if cat in tied_categories), tied_categories[0])
+    else:
+        top_category = category_order[0]
     
     # Map categories to hobbies
     hobby_mapping = {
@@ -632,7 +635,11 @@ def personality_test_result():
     }
     
     recommended_hobby_names = hobby_mapping.get(top_category, [])
-    hobbies = [find_hobby(name) for name in recommended_hobby_names if find_hobby(name)]
+    hobbies = [find_hobby(name) for name in recommended_hobby_names]
+    hobbies = [hobby for hobby in hobbies if hobby]
+    if not hobbies:
+        all_hobbies = load_hobbies()
+        hobbies = all_hobbies[:4] if all_hobbies else []
     
     return render_template("test_result.html", texts=texts, hobbies=hobbies, traits=[top_category], lang=lang)
 

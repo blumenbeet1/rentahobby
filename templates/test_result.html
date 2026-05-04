@@ -25,7 +25,7 @@
             <h2>{{ texts.recommended_hobbies }}</h2>
             <div class="hobbies-grid">
                 {% for hobby in hobbies %}
-                    <div class="hobby-item result-card">
+                    <article class="result-card">
                         {% if hobby.image %}
                             <img src="{{ url_for('static', filename=hobby.image) }}" alt="{{ hobby.Hobby }}">
                         {% else %}
@@ -39,7 +39,7 @@
                                 <a href="{{ url_for('hobby_detail', hobby_name=hobby.Hobby) }}" class="btn-primary">{{ texts.more_info }}</a>
                             </div>
                         </div>
-                    </div>
+                    </article>
                 {% endfor %}
             </div>
         </div>

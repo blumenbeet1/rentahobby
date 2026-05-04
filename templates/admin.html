@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <h1>Admin Dashboard</h1>
+
+  <section>
+    <h2>Interests (E-Mail-Adressen)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Hobby</th>
+          <th>E-Mail</th>
+          <th>Erstellt am</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for interest in interests %}
+        <tr>
+          <td>{{ interest[0] }}</td>
+          <td>{{ interest[1] }}</td>
+          <td>{{ interest[2] }}</td>
+          <td>{{ interest[3] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Hobby Views (Klickzahlen)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Hobby</th>
+          <th>Views</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for view in views %}
+        <tr>
+          <td>{{ view[0] }}</td>
+          <td>{{ view[1] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Wishlist (Anfragen für neue Hobbys)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Hobby</th>
+          <th>Erstellt am</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in wishlist %}
+        <tr>
+          <td>{{ item[0] }}</td>
+          <td>{{ item[1] }}</td>
+          <td>{{ item[2] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<style>
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; }
+</style>
+{% endblock %}

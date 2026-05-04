@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hobbies-page">
+  <h1>{{ texts.contact }}</h1>
+  <div class="contact-container">
+    <div class="contact-info">
+      <h2>{{ texts.contact_title }}</h2>
+      <div class="contact-item">
+        <h3>{{ texts.email_label }}</h3>
+        <a href="mailto:rentahobbby@gmail.com">rentahobbby@gmail.com</a>
+      </div>
+      <div class="contact-item">
+        <h3>{{ texts.phone_label }}</h3>
+        <a href="tel:+410754124388">+41 075 412 43 88</a>
+      </div>
+    </div>
+    <div class="contact-form">
+      <h2>{{ texts.contact_support }}</h2>
+      <p>{{ texts.contact_text }}</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

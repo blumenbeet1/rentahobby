@@ -33,7 +33,7 @@
                         {% endif %}
                         <div class="result-card-content">
                             <h3>{{ hobby.Hobby }}</h3>
-                            <p class="description">{{ hobby['Beschreibung Hobby'][:80] }}...</p>
+                            <p class="description">{{ hobby['Beschreibung Hobby'] }}</p>
                             <p class="price">{{ texts.price }}: {{ hobby.Preis }} CHF</p>
                             <div class="result-buttons">
                                 <a href="{{ url_for('hobby_detail', hobby_name=hobby.Hobby) }}" class="btn-primary">{{ texts.more_info }}</a>

@@ -1,4 +1,5 @@
 import os
+import random
 import sqlite3
 from datetime import datetime
 from pathlib import Path
@@ -431,6 +432,56 @@ def init_db():
 init_db()
 
 
+CATEGORY_KEYWORDS = {
+    "kreativ": [
+        "fotografie",
+        "keramik",
+        "schmuck",
+        "3d",
+        "e-gitarre",
+        "egitarre",
+        "gitarre",
+        "ukulele",
+        "gesang",
+        "nähen",
+        "siebdruck",
+        "modelbau",
+    ],
+    "sportlich": [
+        "bowling",
+        "bogen",
+        "standing",
+        "stand up",
+        "stand-up",
+        "yoga",
+        "fitness",
+        "drohnen",
+        "teleskop",
+        "paddling",
+    ],
+    "intellektuell": [
+        "teleskop",
+        "astronomie",
+        "virtual",
+        "reality",
+        "schach",
+        "fotografie",
+        "drohnen",
+        "modelbau",
+    ],
+    "sozial": [
+        "escape",
+        "gesang",
+        "ukulele",
+        "party",
+        "spiele",
+        "social",
+        "cafe",
+        "café",
+    ],
+}
+
+
 def load_hobbies():
     hobbies = Hobby.query.all()
     return [h.to_dict() for h in hobbies]
@@ -439,8 +490,30 @@ def load_hobbies():
 def find_hobby(name):
     if not name:
         return None
+    normalized = normalize_name(name)
     hobby = Hobby.query.filter(func.lower(Hobby.hobby) == name.strip().lower()).first()
-    return hobby.to_dict() if hobby else None
+    if hobby:
+        return hobby.to_dict()
+    for row in Hobby.query.all():
+        if normalize_name(row.hobby) == normalized:
+            return row.to_dict()
+    return None
+
+
+def recommend_hobbies_by_category(category, max_results=4):
+    keywords = CATEGORY_KEYWORDS.get(category, [])
+    hobbies = load_hobbies()
+    matches = []
+    for hobby in hobbies:
+        text = f"{hobby['Hobby']} {hobby['Beschreibung Hobby']} {hobby['Zubehör']}".lower()
+        if any(keyword in text for keyword in keywords):
+            matches.append(hobby)
+
+    if not matches:
+        return hobbies[:max_results]
+
+    random.shuffle(matches)
+    return matches[:max_results]
 
 
 def search_hobbies(query):
@@ -626,21 +699,7 @@ def personality_test_result():
     else:
         top_category = category_order[0]
     
-    # Map categories to hobbies
-    hobby_mapping = {
-        "kreativ": ["Fotografie", "Keramik", "Schmuckherstellung", "3D-Druck"],
-        "sportlich": ["Bowling", "Bogenschiessen", "Standuppaddlingsup"],
-        "intellektuell": ["Teleskopastronomie", "Virtual Reality"],
-        "sozial": ["Escape Room Spiele für zu Hause"]
-    }
-    
-    recommended_hobby_names = hobby_mapping.get(top_category, [])
-    hobbies = [find_hobby(name) for name in recommended_hobby_names]
-    hobbies = [hobby for hobby in hobbies if hobby]
-    if not hobbies:
-        all_hobbies = load_hobbies()
-        hobbies = all_hobbies[:4] if all_hobbies else []
-    
+    hobbies = recommend_hobbies_by_category(top_category)
     return render_template("test_result.html", texts=texts, hobbies=hobbies, traits=[top_category], lang=lang)
 
 

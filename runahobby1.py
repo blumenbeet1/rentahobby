@@ -178,9 +178,110 @@ LANG_TEXTS = {
 
 # Personality test questions
 PERSONALITY_QUESTIONS = [
-        "buy_button": "Kaufen",
-        "email_label": "Ihre E-Mail-Adresse",
-        "note_title": "Hinweis",
+    {
+        "id": 1,
+        "question": "Wie verbringst du deine Freizeit am liebsten?",
+        "answers": [
+            {"text": "Mit kreativen Aktivitäten wie Malen oder Musik machen", "category": "kreativ"},
+            {"text": "Mit Sport und Bewegung an der frischen Luft", "category": "sportlich"},
+            {"text": "Mit Lesen oder Lernen neuer Dinge", "category": "intellektuell"},
+            {"text": "Mit Freunden treffen und unterhalten", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 2,
+        "question": "Was motiviert dich mehr?",
+        "answers": [
+            {"text": "Schöne Dinge mit meinen Händen zu erschaffen", "category": "kreativ"},
+            {"text": "Meinen Körper fit zu halten", "category": "sportlich"},
+            {"text": "Neues Wissen zu erwerben", "category": "intellektuell"},
+            {"text": "Zeit mit anderen zu verbringen", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 3,
+        "question": "In welcher Umgebung fühlst du dich wohler?",
+        "answers": [
+            {"text": "In einem Atelier oder zu Hause mit Materialien", "category": "kreativ"},
+            {"text": "Draußen in der Natur", "category": "sportlich"},
+            {"text": "In einer Bibliothek oder am Schreibtisch", "category": "intellektuell"},
+            {"text": "In einem Café oder bei einer Party", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 4,
+        "question": "Wie gehst du mit neuen Herausforderungen um?",
+        "answers": [
+            {"text": "Ich experimentiere gerne mit neuen Techniken", "category": "kreativ"},
+            {"text": "Ich nehme sie als sportliche Herausforderung an", "category": "sportlich"},
+            {"text": "Ich recherchiere und lerne systematisch", "category": "intellektuell"},
+            {"text": "Ich suche nach Partnern, um gemeinsam zu lernen", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 5,
+        "question": "Was ist dir bei einem Hobby wichtiger?",
+        "answers": [
+            {"text": "Das Endergebnis und die Kreativität", "category": "kreativ"},
+            {"text": "Die körperliche Betätigung", "category": "sportlich"},
+            {"text": "Das Lernen und Verstehen", "category": "intellektuell"},
+            {"text": "Der Spaß mit anderen", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 6,
+        "question": "Wie viel Zeit möchtest du in ein Hobby investieren?",
+        "answers": [
+            {"text": "Regelmäßig, um Fähigkeiten zu entwickeln", "category": "kreativ"},
+            {"text": "Täglich, um fit zu bleiben", "category": "sportlich"},
+            {"text": "Gelegentlich, aber intensiv", "category": "intellektuell"},
+            {"text": "So oft wie möglich mit Freunden", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 7,
+        "question": "Bevorzugst du Aktivitäten allein oder mit anderen?",
+        "answers": [
+            {"text": "Eher allein, um mich zu konzentrieren", "category": "kreativ"},
+            {"text": "Mit einem Partner oder Team", "category": "sportlich"},
+            {"text": "Allein, um in Ruhe zu lernen", "category": "intellektuell"},
+            {"text": "Mit vielen Leuten", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 8,
+        "question": "Was für Materialien oder Werkzeuge interessieren dich?",
+        "answers": [
+            {"text": "Farben, Pinsel, Ton oder Instrumente", "category": "kreativ"},
+            {"text": "Sportausrüstung wie Bälle oder Fahrräder", "category": "sportlich"},
+            {"text": "Bücher, Computer oder Teleskope", "category": "intellektuell"},
+            {"text": "Spiele oder Partyzubehör", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 9,
+        "question": "Wie wichtig ist dir die körperliche Aktivität?",
+        "answers": [
+            {"text": "Nicht so wichtig, Hauptsache kreativ", "category": "kreativ"},
+            {"text": "Sehr wichtig, ich liebe Bewegung", "category": "sportlich"},
+            {"text": "Mäßig, mehr geistige Aktivität", "category": "intellektuell"},
+            {"text": "Kommt darauf an, aber gerne aktiv", "category": "sozial"}
+        ]
+    },
+    {
+        "id": 10,
+        "question": "Was erwartest du von einem Hobby?",
+        "answers": [
+            {"text": "Etwas Schönes zu erschaffen", "category": "kreativ"},
+            {"text": "Fitness und Gesundheit", "category": "sportlich"},
+            {"text": "Wissen und Bildung", "category": "intellektuell"},
+            {"text": "Soziale Interaktion", "category": "sozial"}
+        ]
+    }
+]
+
+
+def get_lang():
         "note_text": "Lieber Kunde, unser Startup ist noch in der Validierungsphase. Wir sind noch nicht bereit, Vermietungen anzubieten, aber wir melden uns bei Ihnen, sobald wir starten.",
         "back": "Zurück zu Hobbys",
         "contact_title": "Kontakt",
